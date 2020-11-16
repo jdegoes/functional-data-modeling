@@ -1,8 +1,9 @@
-package fdm
+package object fdm {
+  type TODO
 
-type TODO
+  def TODO: Nothing = throw new Error("Unimplemented")
 
-def TODO: Nothing = throw new Error("Unimplemented")
-
-extension on (any: AnyRef):
-  def todo: Nothing = TODO
+  implicit class AnySyntax(any: AnyRef) {
+    def todo: Nothing = TODO
+  }
+}

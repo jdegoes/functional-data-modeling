@@ -1,5 +1,3 @@
-val dottyVersion = "0.26.0"
-
 lazy val root = project
   .in(file(""))
   .settings(
@@ -8,5 +6,7 @@ lazy val root = project
     scalacOptions ++= Seq(
       "-language:postfixOps"
     ),
-    scalaVersion := dottyVersion
+    scalaVersion := "2.13.3"
   )
+
+addCommandAlias("fmt", "all scalafmtSbt scalafmt test:scalafmt")
