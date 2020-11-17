@@ -118,7 +118,7 @@ object invariance {
   def acceptAnimal(delivery: PetDeliveryService[Animal]): Animal = delivery.acceptDelivery
 
   /**
-   * EXERCISE
+   * EXERCISE 2
    *
    * Assuming you have a `PetDeliveryService` that can deliver `Ripley`, try to use the service
    * to call `acceptRipley` (to accept delivery of `Ripley`), `acceptDog` (to accept delivery of
@@ -130,6 +130,115 @@ object invariance {
   def acceptRipleyDogAnimal(delivery: PetDeliveryService[Ripley.type]): Unit = ???
 }
 
-object covariance {}
+/**
+ * So-called declaration-site variance is a feature of Scala that allows you to declare, when you
+ * define a data type, whether each type parameter should be invariant, covariant, or contravariant.
+ * Invariant is the default, and confers no special treatment. Covariance and contravariance, on
+ * the other hand, can help improve the usability of generic data types by allowing Scala to
+ * safely infer suptyping and supertype relationships between the generic data types when their
+ * type parameters have subtyping and supertype relationships.
+ *
+ * Covariance can be used on any type parameter that appears in "output" position from all methods
+ * of a generic data type. The intuition is that covariance on a type parameter means that the
+ * data type has a "surplus" (+) of elements of that type "coming out" of it.
+ */
+object covariance {
+  trait Animal
+  trait Dog       extends Animal
+  trait Cat       extends Animal
+  object Midnight extends Cat
+  object Ripley   extends Dog
 
-object contravariance {}
+  /**
+   * EXERCISE 1
+   *
+   * Declare `PetDeliveryService` to be covariant on the type parameter `A`. This is legal since
+   * `A` never occurs as input to any method on `PetDeliveryService` (it occurs only as output of
+   * the `acceptDelivery` method).
+   */
+  trait PetDeliveryService[A <: Animal] {
+    def acceptDelivery: A
+  }
+
+  def acceptRipley(delivery: PetDeliveryService[Ripley.type]): Ripley.type = delivery.acceptDelivery
+
+  def acceptDog(delivery: PetDeliveryService[Dog]): Dog = delivery.acceptDelivery
+
+  def acceptAnimal(delivery: PetDeliveryService[Animal]): Animal = delivery.acceptDelivery
+
+  /**
+   * EXERCISE 2
+   *
+   * Assuming you have a `PetDeliveryService` that can deliver `Ripley`, try to use the service
+   * to call `acceptRipley` (to accept delivery of `Ripley`), `acceptDog` (to accept delivery of
+   * a dog, not necessarily Ripley), and `acceptAnimal` (to accept delivery of an animal, not
+   * necessarily a dog).
+   *
+   * Take note of your findings.
+   */
+  def acceptRipleyDogAnimal(delivery: PetDeliveryService[Ripley.type]): Unit = ???
+}
+
+/**
+ * Contravariance can be used on any type parameter that appears in "input" position from all
+ * methods of a generic data type. The intuition is that contravariance on a type parameter means
+ * that the data type has a "deficit" (-) of elements of that type, requiring you feed them in.
+ */
+object contravariance {
+  trait Animal
+  trait Dog       extends Animal
+  trait Cat       extends Animal
+  object Midnight extends Cat
+  object Ripley   extends Dog
+
+  /**
+   * EXERCISE 1
+   *
+   * Declare `PetHotel` to be contravariant on the type parameter `A`. This is legal since `A`
+   * never occurs as output from any method on `PetHotel` (it occurs only as input to the `book`
+   * method).
+   */
+  trait PetHotel[A <: Animal] {
+    def book(pet: A): Unit = println(s"Booked a room for ${pet}")
+  }
+
+  def bookRipley(dogHotel: PetHotel[Dog]) = dogHotel.book(Ripley)
+
+  def bookMidnight(catHotel: PetHotel[Cat]) = catHotel.book(Midnight)
+
+  /**
+   * EXERCISE 2
+   *
+   * Assuming you have a `PetHotel` that can book any kind of `Animal`. Use this pet hotel to try
+   * to call the `bookRipley` and `bookMidnight` functions, to book these two pets at the hotel.
+   *
+   * Take note of your findings.
+   */
+  def bookMidnightAndRipley(animalHotel: PetHotel[Animal]): Unit = ???
+}
+
+/**
+ * Type parameters are channels of information: and as channels, they can be used, or ignored.
+ * Different types can be used to "ignore" a type parameter depending on whether the parameter is
+ * declared as covariant or contravariant (or invariant).
+ */
+object variance_zeros {
+
+  /**
+   * EXERCISE 1
+   *
+   * The type `Nothing` can be used when a covariant type parameter is not being used. For example,
+   * an empty list does not use any element type, because it has no elements.
+   */
+  type Answer1
+  type UnusedListElement = List[Answer1]
+
+  /**
+   * EXERCISE 2
+   *
+   * The type `Any` can be used when a contravariant type parameter is not being used. For example,
+   * a constant function does not use its input element.
+   */
+  type Answer2
+  type UnusedFunctionInput[+B] = Answer2 => B
+}

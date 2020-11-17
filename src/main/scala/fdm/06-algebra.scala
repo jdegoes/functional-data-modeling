@@ -116,6 +116,10 @@ object algebra {
   def roundtripDist2[A, B, C](e: Either[(A, B), (A, C)]): Either[(A, B), (A, C)] = distribute(factor(e))
 }
 
+/**
+ * The algebraic notation introduced previously is quite flexible and can model all data types,
+ * including those that are generic and recursive.
+ */
 object algebra_of_types {
   final case class Identity[A](value: A)
 
@@ -154,4 +158,50 @@ object algebra_of_types {
     final case class Leaf[+A](value: A)                      extends Tree[A]
     final case class Fork[+A](left: Tree[A], right: Tree[A]) extends Tree[A]
   }
+}
+
+/**
+ * Different types can be equivalent, and looking at their algebraic definitions can make this
+ * equivalence easier to see.
+ */
+object algebraic_equivalence {
+
+  /**
+   * EXERCISE 1
+   *
+   * The type `Either[String, Option[Int]]` can be difficult to work with, if we are concerned
+   * about manipulating the `Int`. Fortunately, this type is equivalent to another one, which is
+   * easier to work with. Find some type `Answer1` such that `Either[Answer1, Int]` is equivalent
+   * to the first type.
+   *
+   * Write out the algebraic definitions of both types, and show they are equivalent.
+   */
+  type ComplexEither = Either[String, Option[Int]]
+  type Answer1
+  type SimplerEither = Either[Answer1, Int]
+
+  /**
+   * EXERCISE 2
+   *
+   * The type `Option[A]` is actually unnecessary, because it is equivalent to `Either[Answer2, A]`,
+   * for some type `Answer2`. Find what this type is and write your answer below.
+   *
+   * Write out the algebraic definitions of both `Option` and your new type, and show they are
+   * equivalent.
+   */
+  type Answer2
+  type NewOption[+A] = Either[Answer2, A]
+
+  /**
+   * EXERCISE 3
+   *
+   * The type `Try[A]` is also unnecessary. Find a type `Answer3` such that `Either[Answer3, A]` is
+   * equivalent to `Try[A]`.
+   *
+   * Write out the algebraic definitions of both `Try` and your new type, and show they are
+   * equivalent.
+   */
+  type Answer3
+  type NewTry[+A] = Either[Answer3, A]
+
 }
