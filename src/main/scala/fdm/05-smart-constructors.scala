@@ -8,10 +8,10 @@ package fdm
  * only valid data, but without complicated data types.
  */
 object smart_constructors {
-  final case class Email private (value: String)
+  sealed abstract case class Email private (value: String)
   object Email {
     def fromString(email: String): Option[Email] =
-      if (email.matches("""/\w+@\w+.com""")) Some(new Email(email)) else None
+      if (email.matches("""/\w+@\w+.com""")) Some(new Email(email) {}) else None
   }
 
   /**
@@ -19,19 +19,51 @@ object smart_constructors {
    *
    * Create a smart constructor for `NonNegative` which ensures the integer is always non-negative.
    */
-  final case class NonNegative private (value: Int)
+  sealed abstract case class NonNegative private (value: Int)
 
   /**
    * EXERCISE 2
    *
    * Create a smart constructor for `Age` that ensures the integer is between 0 and 120.
    */
-  final case class Age private (value: Int)
+  sealed abstract case class Age private (value: Int)
 
   /**
    * EXERCISE 3
    *
    * Create a smart constructor for password that ensures some security considerations are met.
    */
-  final case class Password private (value: String)
+  sealed abstract case class Password private (value: String)
+}
+
+object applied_smart_constructors {
+
+  /**
+   * EXERCISE 1
+   *
+   * Identify the weaknesses in this data type, and use smart constructors (and possibly other
+   * techniques) to correct them.
+   */
+  final case class BankAccount(id: String, name: String, balance: Double, opened: java.time.Instant)
+
+  /**
+   * EXERCISE 2
+   *
+   * Identify the weaknesses in this data type, and use smart constructors (and possibly other
+   * techniques) to correct them.
+   */
+  final case class Person(age: Int, name: String, salary: Double)
+
+  /**
+   * EXERCISE 3
+   *
+   * Identify the weaknesses in this data type, and use smart constructors (and possibly other
+   * techniques) to correct them.
+   */
+  final case class SecurityEvent(machine: String, timestamp: String, eventType: Int)
+  object EventType {
+    val PortScanning    = 0
+    val DenialOfService = 1
+    val InvalidLogin    = 2
+  }
 }

@@ -107,10 +107,45 @@ object algebra {
   /**
    * EXERCISE 8
    *
+   * Algebraic data types follow the distributive property, such that `A * (B + C) = A * B + A * C`.
+   */
+  def distribute[A, B, C](tuple: (A, Either[B, C])): Either[(A, B), (A, C)] = TODO
+  def factor[A, B, C](either: Either[(A, B), (A, C)]): (A, Either[B, C])    = TODO
+
+  def roundtripDist1[A, B, C](t: (A, Either[B, C])): (A, Either[B, C])           = factor(distribute(t))
+  def roundtripDist2[A, B, C](e: Either[(A, B), (A, C)]): Either[(A, B), (A, C)] = distribute(factor(e))
+}
+
+object algebra_of_types {
+  final case class Identity[A](value: A)
+
+  /**
+   * EXERCISE 1
+   *
    * All functional data types can be written using sums and products, and therefore have an
-   * algebraic definition. For recursive data types, this can be an infinite definition. For
-   * example, the type of `List[A]` can be defined as `1 + A + A * A + A * A * A + ...`, or,
-   * by using exponentiation, `1 + A + A^2 + A^3 + ...`.
+   * algebraic definition. For polymorphic data types, the algebraic definition may refer to the
+   * polymorphic types. For example, the algebraic definition of the identity type shown above is
+   * `A`.
+   *
+   * Create a polymorphic data type whose algebraic definition is `A * B`. Hint: You can use
+   * `Tuple2` or create your own version of this data type.
+   */
+  type ATimesB
+
+  /**
+   * EXERCISE 2
+   *
+   * Create a polymorphic data type whose algebraic definition is `A + B`. Hint: You can use
+   * `Either` or create your own version of this data type.
+   */
+  type APlusB
+
+  /**
+   * EXERCISE 3
+   *
+   * The algebraic definition of recursive polymorphic data types can be expressed using infinite
+   * polynomial series. For example, the type of `List[A]` can be defined as
+   * `1 + A + A * A + A * A * A + ...`, or, by using exponentiation, `1 + A + A^2 + A^3 + ...`.
    *
    * Find the algebraic definition for the following type `Tree`.
    */

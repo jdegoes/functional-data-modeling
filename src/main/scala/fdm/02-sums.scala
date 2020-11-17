@@ -123,10 +123,10 @@ object enum_basics {
 object enum_utilities {
   sealed trait Card
   object Card {
-    final case class Clubs(points: Int)    extends Currency
-    final case class Diamonds(points: Int) extends Currency
-    final case class Spades(points: Int)   extends Currency
-    final case class Hearts(points: Int)   extends Currency
+    final case class Clubs(points: Int)    extends Card
+    final case class Diamonds(points: Int) extends Card
+    final case class Spades(points: Int)   extends Card
+    final case class Hearts(points: Int)   extends Card
   }
 
   Card.Clubs(10) match {
@@ -146,7 +146,7 @@ object enum_utilities {
   card todo
 
   /**
-   * EXERCISE 3
+   * EXERCISE 2
    *
    * As with case classes, pattern matches on the cases of an enum may utilize literals. Pattern
    * match on `card` with a case that looks for `Spades(10)` (a spades card with 10 points), and
@@ -155,11 +155,34 @@ object enum_utilities {
   card todo
 
   /**
-   * EXERCISE 5
+   * EXERCISE 3
    *
    * As with case classes, pattern matches on the cases of an enum may utilize conditionals. Pattern
    * match on `card` again, and have two cases: one that looks for `Spades` with points `>= 10`,
    * and a catch-all. Print out distinct messages in each case.
+   */
+  card todo
+
+  /**
+   * EXERCISE 4
+   *
+   * As with pattern matching on case classes, when pattern matching on enumerations, any piece of
+   * a pattern match may be captured and placed into a new variable by using the as-pattern syntax
+   * `x @ ...`, where `x` is any legal variable name. The variable introduced by an as-pattern may
+   * be used both in any conditional, or inside the case of the pattern match.
+   *
+   * In this exercise, match for `Spades`, give it a name `spades`, and print it out.
+   */
+  card todo
+
+  /**
+   * EXERCISE 5
+   *
+   * As with case classes, the `|` pattern operator lets you match against two alternatives,
+   * providing neither introduces new variables. In the context of enumerations, this operator
+   * provides a nice way to look for one among a small number of different cases.
+   *
+   * In this exercise, match for either Spades or Diamonds, and print out a message.
    */
   card todo
 }
@@ -200,4 +223,18 @@ object enum_generics {
    * Construct an `AdvertisingEvent` that stores data of type `Int`, namely, the integer `42`.
    */
   lazy val advertisingEvent = TODO
+
+  /**
+   * EXERCISE 4
+   *
+   * Take the `ConcatList` enum, and make it generic, by introducing a new type parameter called
+   * `Element`, and using `Element` for the type of the field `value` that is stored in some of the
+   * cases of the enum.
+   */
+  sealed trait ConcatList
+  object ConcatList {
+    case object Empty                                            extends ConcatList
+    final case class Concat(left: ConcatList, right: ConcatList) extends ConcatList
+    final case class One(value: Int)                             extends ConcatList
+  }
 }

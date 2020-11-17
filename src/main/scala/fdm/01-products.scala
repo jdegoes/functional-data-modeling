@@ -221,6 +221,30 @@ object product_patterns {
    * cases, print out the name of the street.
    */
   dilbert todo
+
+  /**
+   * EXERCISE 6
+   *
+   * Any piece of a pattern match may be captured and placed into a new variable by using the as-
+   * pattern syntax `x @ ...`, where `x` is any legal variable name. The variable introduced by an
+   * as-pattern may be used both in any conditional, or inside the case of the pattern match.
+   *
+   * In this exercise, pattern match on dilbert, and give a name `a` to the inner `Address`, and
+   * then print out that `a` in the case expression.
+   */
+  dilbert todo
+
+  /**
+   * EXERCISE 7
+   *
+   * Using the `|` symbol, you can match against two alternatives, providing neither introduces
+   * new variables. In the context of case classes, this symbol provides a nice way to look for
+   * one among a small number of constant values.
+   *
+   * In this exercise, match for the name "Dilbert" or the name "dilbert", and print out the
+   * address of the employee.
+   */
+  dilbert todo
 }
 
 /**
@@ -252,4 +276,13 @@ object case_class_generics {
    * Construct an event that has a payload type of `Int`.
    */
   lazy val eventInt = TODO
+
+  /**
+   * EXERCISE 3
+   *
+   * Convert this non-generic class into a generic class, by introducing a new type parameter,
+   * called `Body`, which represents the body type of the request, and use this type parameter to
+   * define the type of the field called `body` already defined inside the case class.
+   */
+  final case class Request(body: Event, sender: String)
 }
