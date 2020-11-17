@@ -177,6 +177,23 @@ object covariance {
    * Take note of your findings.
    */
   def acceptRipleyDogAnimal(delivery: PetDeliveryService[Ripley.type]): Unit = ???
+
+  /**
+   * EXERCISE 3
+   *
+   * The rules for covariance imply that in any method that *wants* to take a covariant type
+   * parameter as input, it must instead allow any supertype of the type parameter as input.
+   *
+   * This makes Scala's type system sound. Without it, it would not be safe to allow subtyping
+   * on the generic data type based on subtyping of the type parameter.
+   *
+   * Following the pattern shown in `concat`, make an `append` method that compiles.
+   */
+  sealed trait List[+A] {
+    def concat[A1 >: A](that: List[A1]): List[A1] = ???
+
+    // def append(a: A): List[A]
+  }
 }
 
 /**
@@ -215,6 +232,23 @@ object contravariance {
    * Take note of your findings.
    */
   def bookMidnightAndRipley(animalHotel: PetHotel[Animal]): Unit = ???
+
+  /**
+   * EXERCISE 3
+   *
+   * The rules for contravariance imply that in any method that *wants* to take another generic
+   * data structure with the same type parameter, it must instead allow that type parameter to be
+   * any subtype of the type parameter.
+   *
+   * This makes Scala's type system sound.
+   *
+   * Following the pattern shown in `merge`, make a `fallback` method that compiles.
+   */
+  sealed trait Consumer[-A] {
+    def merge[A1 <: A](that: Consumer[A1]): Consumer[A1] = ???
+
+    /// def fallback[A](that: Consumer[A]): Consumer[A]
+  }
 }
 
 /**
@@ -241,4 +275,33 @@ object variance_zeros {
    */
   type Answer2
   type UnusedFunctionInput[+B] = Answer2 => B
+}
+
+object advanced_variance {
+
+  /**
+   * EXERCISE 1
+   *
+   * Given that a workflow is designed to consume some input, and either error or produce an
+   * output value, choose the appropriate variance for the workflow type parameters.
+   */
+  final case class Workflow[Input, Error, Output](run: Input => Either[Error, Output]) {
+    def map[NewOutput](f: Output => NewOutput): Workflow[Input, Error, NewOutput] = Workflow(i => run(i).map(f))
+
+    /**
+     * EXERCISE 2
+     *
+     * Add the appropriate variance annotations to the following method, and see if you can
+     * implement it by following its types.
+     */
+    // def flatMap[NewOutput](f: Output => Workflow[Input, Error, NewOutput]): Workflow[Input, Error, NewOutput] = ???
+
+    /**
+     * EXERCISE 3
+     *
+     * Add the appropriate variance annotations to the following method, and see if you can
+     * implement it by following its types.
+     */
+    // def fallback(that: Workflow[Input, Error, Output]): Workflow[Input, Error, Output] = ???
+  }
 }
