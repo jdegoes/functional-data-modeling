@@ -67,7 +67,6 @@ object extract_product {
    */
   sealed trait AdvertisingEvent
   object AdvertisingEvent {
-    case object None                                                           extends AdvertisingEvent
     final case class Impression(pageUrl: String, data: String)                 extends AdvertisingEvent
     final case class Click(pageUrl: String, elementId: String, data: String)   extends AdvertisingEvent
     final case class Action(pageUrl: String, actionName: String, data: String) extends AdvertisingEvent
@@ -147,9 +146,10 @@ object extract_sum {
    * Extract out a missing enumeration from the following data type.
    */
   final case class CreditCard(
-    digit16: Option[Digit16],    // For VISA
-    digit15: Option[Digit15],    // For AMEX
-    securityCode: Option[Digit4] // For VISA
+    digit16: Option[Digit16],      // For VISA
+    digit15: Option[Digit15],      // For AMEX
+    securityCode3: Option[Digit3], // For AMEX
+    securityCode4: Option[Digit4]  // For VISA
   )
 
   final case class Digit16(group1: Digit4, group2: Digit4, group3: Digit4, group4: Digit4)
@@ -170,36 +170,6 @@ object extract_sum {
     case object _7 extends Digit
     case object _8 extends Digit
     case object _9 extends Digit
-  }
-}
-
-/**
- * Another anti-pattern is when a code base has (unsealed) traits that are used for storing data.
- * Such code that encourage runtime type checking using `isInstanceOf` or equivalent, which is
- * neither safe, nor easy to maintain as new subtypes are introduced into the code base.
- *
- * In this case, we can apply a "seal trait" refactoring, which involves sealing the data trait,
- * and relocating all classes that implement the trait into the same file, together with the trait.
- * This will ensure we match against all subtypes in a pattern match, making our code safer and
- * giving us compiler assistance to track down places we need to update when we add a new subtype.
- */
-object seal_data_trait {
-
-  /**
-   * EXERCISE 1
-   *
-   * Apply the seal trait refactoring to the following `Document` data model, so the compiler will
-   * know about and enforce
-   */
-  trait Document {
-    def documentId: String
-  }
-  trait OwnedDocument extends Document {
-    def ownerId: String
-  }
-  trait AnonymousDocument extends Document
-  trait GroupOwnedDocument extends Document {
-    def ownerIds: List[String]
   }
 }
 
@@ -317,4 +287,39 @@ object nested_shadowing {
       case Not(value) =>
         analyzePattern(b)
     }
+}
+
+/**
+ * Another (often but not always) anti-pattern is embedding an "empty" term into a sum type.
+ * This leads to an inability to describe all the terms except that "empty" term, forcing all code
+ * to have to deal with the "empty" case.
+ *
+ * In this case, the solution is to delete the empty, and use `Option[XYZ]` at higher levels, where
+ * code requires an empty type.
+ */
+object delete_empty {
+
+  /**
+   * EXERCISE 1
+   *
+   * Apply the "delete empty" refactoring to allow more precision.
+   */
+  sealed trait Currency
+  object Currency {
+    case object None                               extends Currency
+    final case class USD(dollars: Int, cents: Int) extends Currency
+    final case class EUR(euros: Int, cents: Int)   extends Currency
+  }
+
+  /**
+   * EXERCISE 2
+   *
+   * Apply the "delete empty" refactoring to allow more precision.
+   */
+  sealed trait DataSource
+  object DataSource {
+    case object NoSource                                                extends DataSource
+    final case class S3(bucket: String)                                 extends DataSource
+    final case class JDBC(url: String, properties: Map[String, String]) extends DataSource
+  }
 }
